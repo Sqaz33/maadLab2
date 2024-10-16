@@ -590,48 +590,39 @@ def e20_4():
 
 #################################### 21 ####################################
 def e21_1():
-    # Зададим параметры для метода Эйлера
-    x_start = 0     # начальное значение x
-    x_end = 13      # конечное значение x
-    y0 = 3          # начальное условие y(0)
-    h = 0.01        # шаг метода Эйлера
 
-    # Дифференциальное уравнение y' = -sin(sin(x))
-    def f(x, y):
-        return -np.sin(np.sin(x))
+    # Определяем параметры
+    x_start = 0
+    x_end = 13
+    h = 0.1  # Шаг
+    n_steps = int((x_end - x_start) / h)
 
-    # Метод Эйлера
-    def euler_method(x_start, x_end, y0, h):
-        n = int((x_end - x_start) / h)  # количество шагов
-        x_values = np.linspace(x_start, x_end, n)
-        y_values = np.zeros(n)
-        y_values[0] = y0
-        
-        for i in range(1, n):
-            y_values[i] = y_values[i-1] + h * f(x_values[i-1], y_values[i-1])
-        
-        return x_values, y_values
+    # Инициализация массивов для приближенного и точного решения
+    x_values = np.linspace(x_start, x_end, n_steps + 1)
+    y_approx = np.zeros(n_steps + 1)
+    y_exact = np.cos(x_values)
 
-    # Точное решение y(x) = cos(cos(x))
-    def exact_solution(x):
-        return np.cos(np.cos(x))
+    # Начальные условия
+    y_approx[0] = 1
 
-    # Получим результаты численного метода Эйлера
-    x_vals, y_vals_approx = euler_method(x_start, x_end, y0, h)
+    # Схема Эйлера
+    for i in range(n_steps):
+        y_approx[i + 1] = y_approx[i] + h * (-np.sin(np.sin(x_values[i])))
 
-    # Точное решение на тех же x
-    y_vals_exact = exact_solution(x_vals)
-
-    # Построение графика
-    plt.plot(x_vals, y_vals_approx, label="Приближённое решение (метод Эйлера)", color='blue')
-    plt.plot(x_vals, y_vals_exact, label="Точное решение y(x) = cos(cos(x))", color='red', linestyle='dashed')
-    plt.title('Сравнение приближённого решения и точного решения')
+    # Построение графиков
+    plt.figure(figsize=(12, 6))
+    plt.plot(x_values, y_approx, label='Приближенное решение (Эйлер)', color='blue')
+    plt.plot(x_values, y_exact, label='Точное решение', color='orange', linestyle='--')
+    plt.title('Приближенное и точное решение задачи Коши')
     plt.xlabel('x')
     plt.ylabel('y')
+    plt.axhline(0, color='black', lw=0.5)
+    plt.axvline(0, color='black', lw=0.5)
+    plt.xlim(x_start, x_end)
+    plt.ylim(-1.5, 2)
+    plt.grid()
     plt.legend()
-    plt.grid(True)
     plt.show()
-
 
 def e21_2():
     # Параметры метода Эйлера
